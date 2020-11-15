@@ -1,10 +1,2 @@
 /node_modules
-/docs/.vuepress/dist/*
 /docs/.vuepress/dist/
-/docs/.vuepress/dist/assets/
-/docs/.vuepress/dist/classes/
-/docs/.vuepress/dist/install/
-/docs/.vuepress/dist/404.html
-/docs/.vuepress/dist/favicon.ico
-/docs/.vuepress/dist/imgonline-com-ua-Transparent-backgr-DmOqKkhGd6wral.png
-/docs/.vuepress/dist/index.html
