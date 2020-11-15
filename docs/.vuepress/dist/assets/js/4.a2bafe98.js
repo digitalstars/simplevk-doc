@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[4],{351:function(e,r,t){"use strict";t.r(r);var n={name:"redir",props:["redir"],created:function(){this.$router.push(this.redir)}},i=t(42),s=Object(i.a)(n,(function(){var e=this.$createElement;return(this._self._c||e)("div")}),[],!1,null,"23be79fd",null);r.default=s.exports}}]);
