@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="90cfade7-f7e1-4c83-aab2-cdbb92d8751c" name="scripthub" url="http://194.1.239.231">
+        <fileTransfer host="194.1.239.231" port="22" rootFolder="/home/scripthub" accessType="SFTP" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="d11406b9-ce53-49f2-b774-bdd524841266" name="simplevk" url="http://193.9.61.124">
+        <fileTransfer host="193.9.61.124" port="22" rootFolder="/home/ftp_user" accessType="SFTP" authAgent="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
