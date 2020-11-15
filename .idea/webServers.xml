@@ -3,19 +3,24 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="90cfade7-f7e1-4c83-aab2-cdbb92d8751c" name="scripthub" url="http://194.1.239.231">
-        <fileTransfer host="194.1.239.231" port="22" rootFolder="/home/scripthub" accessType="SFTP" authAgent="true">
+        <fileTransfer rootFolder="/home/scripthub" accessType="SFTP" host="194.1.239.231" port="22" sshConfigId="ca5e5a50-a0f4-4a00-9251-e356aeddad6b" sshConfig="scripthub" authAgent="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="22" />
         </fileTransfer>
       </webServer>
-      <webServer id="d11406b9-ce53-49f2-b774-bdd524841266" name="simplevk" url="http://193.9.61.124">
-        <fileTransfer host="193.9.61.124" port="22" rootFolder="/home/ftp_user" accessType="SFTP" authAgent="true">
+      <webServer id="d11406b9-ce53-49f2-b774-bdd524841266" name="simplevk-doc" url="http://193.9.61.124">
+        <fileTransfer rootFolder="/home/ftp_user/public_html/vuepress/" accessType="SFTP" host="193.9.61.124" port="22" sshConfigId="010c4bc3-347c-4fba-8244-c6b34c11cbc0" sshConfig="root@digital2" keyPair="true">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>
-          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+      <webServer id="24277adb-d112-4ea0-8f2c-3a96c969b282" name="1" url="http://learner34.creativityprojectcenter.ru">
+        <fileTransfer host="learner34.creativityprojectcenter.ru" port="21">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
         </fileTransfer>
       </webServer>
     </option>
