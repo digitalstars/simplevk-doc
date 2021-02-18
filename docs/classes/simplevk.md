@@ -481,15 +481,90 @@ todo: заполнить позже
 
 
 ## placeholders
+
+Создаёт алиас на `id` пользователя
+
+Восклицательный знак в начале — пользователь будет упомянут
+
+### Возможные варианты:
+
+`~fn~` - упоминание пользователя по имени\
+`~ln~` - упоминание пользователя по фамилии\
+`~full~` - упоминание пользователя по имени и фамилии\
+
+Можно явно указать через черту на какой `id` необходим плейсхолдер:\
+`~full|418618~`
+
+### Примеры использования
+
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->initVars($id);
+$vk->msg('Привет ~fn~')->send(); //Привет Имя
+$vk->msg('Привет ~ln~')->send(); //Привет Фамилия
+$vk->msg('Привет ~full~')->send(); //Привет Имя Фамилия
+
+//Будет упоминание
+$vk->msg('Привет ~fn~')->send(); //Привет [id|Имя]
+$vk->msg('Привет ~ln~')->send(); //Привет [id|Фамилия]
+$vk->msg('Привет ~full~')->send(); //Привет [id|Имя Фамилия]
+```
+
 ## group
 ## responseGeneratorRequest
 ## generatorRequest
 ## getAllWalls
+Получить все посты
+
+### Параметры метода
+
+|# |Название | Тип | Описание | |:-:|:-:|:--------------: |------------- | |1 |**id\***  | `int`          | int |
+
+### Возвращает
+
+`Generator`
+
+### Примеры использования
+
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+foreach ($bot->getAllWalls(1) as $post) {
+print_r($post);
+}
+```
 ## getAllGroupsFromUser
 ## getAllMembers
 ## getAllComments
 ## getAllDialogs
 ## groupInfo
+Получить информацию о группе 
+
+### Параметры метода
+
+|# |Название | Тип | Описание | |:-:|:-:|:--------------: |------------- | |1 |**id\***  | `int`          | int |
+
+### Возвращает
+
+`array`
+
+### Примеры использования
+
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->groupInfo(1); //"20:27:12 23.09.2006"
+```
 ## json_online
 ## generateCarousel
 ## generateKeyboard
@@ -505,6 +580,27 @@ todo: заполнить позже
 ## sendCarousel
 ## sendKeyboard
 ## dateRegistration
+
+Получить дату регистрации
+
+### Параметры метода
+
+|# |Название | Тип | Описание | |:-:|:-:|:--------------: |------------- | |1 |**id\***  | `int`          | int |
+
+### Возвращает
+
+`string`
+
+### Примеры использования
+
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->dateRegistration(1); //"20:27:12 23.09.2006"
+```
 ## sendWallComment
 ## userInfo
 ## eventAnswerEditKeyboard
@@ -514,4 +610,35 @@ todo: заполнить позже
 ## sendAllChats
 ## sendAllDialogs
 ## isAdmin
+
+Является ли участник администратором беседы
+
+### Параметры метода
+
+|# |Название | Тип | Описание | |:-:|:-:|:--------------: |------------- | |1 |**id\***  | `int`          | peer_id id
+беседы|
+
+### Возвращает
+
+`string` owner - создатель, admin - администратор\
+`false` обычный пользователь\
+`null` пользователя нет в беседе\
+`Expection` нет доступа к информации, возможно:\
+бот не является администратором, неправильный id беседы, бота нет в беседе
+
+### Примеры использования
+
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->initVars($peer_id, $user_id);
+try {
+    $vk->isAdmin($user_id, $peer_id);
+} catch (SimpleVkException $e) {
+    die($e->getMessage());
+}
+```
 ## setProxy
