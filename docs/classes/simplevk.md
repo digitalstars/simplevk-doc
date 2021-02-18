@@ -12,7 +12,7 @@ use DigitalStars\SimpleVK\SimpleVK as vk;
 ## create
 С помощью метода `create` можно получить авторизацию для работы с ВК.  
 Есть три типа авторизации:
-### Используя токен аккаунта или сообщества  
+### Используя токен пользователя или сообщества  
 #### Параметры метода
 
 |#  |Название  |    Тип          |    Описание             |
@@ -61,8 +61,7 @@ $vk = vk::create($auth);
 require_once "vendor/autoload.php";
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
-$vk = vk::create(ТОКЕН, '5.126');
-$vk->request('messages.send', ['message' => 'Привет', 'user_id' => 89846036]);
+$vk = vk::create(ТОКЕН, '5.126')->setConfirm('6628bb69');
 ```
 
 ## setSecret
@@ -317,6 +316,48 @@ $vk->clientSupport($keyboard, $inline);
 $vk->clientSupport($keyboard, null, null, $buttons);
  ```
 
+## group
+Метод нужен для вызова методов ВК от лица сообщества, в котором текущий пользователь является админом. Используется, когда у вас нет токена от сообщества, но нужно выполнить какой-то действие в сообществе от вашего лица.
+### Параметры метода
+|#  |Название  |    Тип          |    Описание             |
+|:-:|:-:|:--------------: |-------------          |
+|1  |id  | `string`          | id группы. Положительное число   |
+### Возвращает
+`$this` - экземпляр класса, который вызвал этот метод
+
+### Примеры использования
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ЛОГИН, ПАРОЛЬ, '5.126')->group(3344678);
+$vk->sendMessage(123456, 'Пишу от лица группы!');
+```
+
+## json_online
+Получить ссылку на отображение переданного массива/json в виде json дерева на сайте <https://jsoneditoronline.org/>. Удобно использовать при дебаге больших массивов.  
+> Если не передавать в метод данные, то по умолчанию будет сформирована ссылка с данными события пришедшего от ВК.
+### Параметры метода
+|#  |Название  |    Тип          |    Описание             |
+|:-:|:-:|:--------------: |-------------          |
+|1  |data  | `json`\|`array`          | Массив или json   |
+### Возвращает
+Ссылку на <https://jsoneditoronline.org/> с данными
+
+### Примеры использования
+```php
+<?php
+require_once "vendor/autoload.php";
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$url = $vk->json_online();
+$vk->reply("Визуализация данных этого события: $url");
+$url2 = $vk->json_online([1,2,3 => '4']);
+$vk->reply("Визуализация массива: $url2");
+```
+
 
 ## request
 Используется для вызова любого метода VK API, который есть в документации ВК
@@ -342,15 +383,16 @@ $vk->request('messages.send', ['message' => 'Привет', 'user_id' => 8984603
 $vk->messages_send(['message' => 'Привет', 'user_id' => 89846036]);
 ```
 
-## reply
-Отправляет сообщение тому, от кого пришло событие
+
+## userInfo
+Обертка над `users.get`
 ### Параметры метода
 |#  |Название  |    Тип          |    Описание             |
 |:-:|:-:|:--------------: |-------------          |
-|1  |**message\***  | `string`          | Текст сообщения   |
-|2  |params  | `array`          | Ассоциативный массив параметров для messages.send   |
+|1  |user_url  | `string`\|`int`          | Ссылка на пользователя в любом виде или user_id   |
+|1  |scope   | `array`          | Ассоциативный массив доп. параметров для users.get  |
 ### Возвращает
-Массив `response` с результатом выполнения метода ВК messages.send в случае успешного выполнения и `Exception` в случае ошибки
+Первый элемент массива `response` из результата выполнения `users.get`
 
 ### Примеры использования
 ```php
@@ -359,21 +401,29 @@ require_once "vendor/autoload.php";
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
-$vk->initVars($id, null, null, null, null, $msg_id);
-$vk->reply('Это мое сообщение');
-$vk->reply('Вот твое сообщение!', ['forward_messages' => $msg_id]);
+$vk->userInfo('https://vk.com/durov');
+//или
+$info = $vk->userInfo(1, ['fields' => 'sex']);
+print_r($info);
+/*[
+'first_name' => 'Павел',
+'id' => 1,
+'last_name' => 'Дуров',
+'can_access_closed' => true,
+'is_closed' => false,
+'sex' => 2
+]*/
 ```
 
-## sendMessage
-Отправляет сообщение указанному peer_id
+
+## groupInfo
+Обертка над `groups.getById`
 ### Параметры метода
 |#  |Название  |    Тип          |    Описание             |
 |:-:|:-:|:--------------: |-------------          |
-|1  |**id\***  | `int`          | peer_id получателя   |
-|2  |**message\***  | `string`          | Текст сообщения   |
-|3  |params  | `array`          | Ассоциативный массив параметров для messages.send   |
+|1  |group_url  | `string`\|`int`          | id или короткие имена сообществ, можно ссылкой |
 ### Возвращает
-Массив `response` с результатом выполнения метода ВК messages.send в случае успешного выполнения и `Exception` в случае ошибки
+Первый элемент массива `response` из результата выполнения `groups.getById`
 
 ### Примеры использования
 ```php
@@ -382,104 +432,25 @@ require_once "vendor/autoload.php";
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
-$vk->initVars($id, null, null, null, null, $msg_id);
-$vk->sendMessage($id, 'Это мое сообщение');
-$vk->sendMessage($id, 'Вот твое сообщение!', ['forward_messages' => $msg_id]);
+$vk->groupInfo('https://vk.com/tower_of_destiny');
+//или
+$info = $vk->userInfo(193655066);
+print_r($info);
+/*[
+'first_name' => 'Павел',
+'id' => 1,
+'last_name' => 'Дуров',
+'can_access_closed' => true,
+'is_closed' => false,
+'sex' => 2
+]*/
 ```
 
-## forward
-Пересылает id сообщений указанному peer_id
-### Параметры метода
-|#  |Название  |    Тип          |    Описание             |
-|:-:|:-:|:--------------: |-------------          |
-|1  |**id\***  | `int`          | peer_id получателя   |
-|2  |**id_messages\***  | `int`\|`array`          | Массив с id сообщений или id сообщения   |
-|3  |params  | `array`          | Ассоциативный массив параметров для messages.send   |
-### Возвращает
-Массив `response` с результатом выполнения метода ВК messages.send в случае успешного выполнения и `Exception` в случае ошибки
-
-### Примеры использования
-```php
-<?php
-require_once "vendor/autoload.php";
-use DigitalStars\SimpleVK\SimpleVK as vk;
-
-$vk = vk::create(ТОКЕН, '5.126');
-$vk->initVars($id, null, null, null, null, $msg_id);
-$vk->forward($id, $msg_id, ['message' => 'Вот твое сообщение!']);
-```
-
-## sendImage
-Отправляет изображение/я указанному peer_id
-### Параметры метода
-|#  |Название  |    Тип          |    Описание             |
-|:-:|:-:|:--------------: |-------------          |
-|1  |**id\***  | `int`          | peer_id получателя   |
-|2  |**local_file_paths\***  | `string`\|`array`          | путь до изображения или массив путей   |
-|3  |params  | `array`          | Ассоциативный массив параметров для messages.send   |
-### Возвращает
-Массив `response` с результатом выполнения метода ВК messages.send в случае успешного выполнения и `Exception` в случае ошибки
-
-### Примеры использования
-```php
-<?php
-require_once "vendor/autoload.php";
-use DigitalStars\SimpleVK\SimpleVK as vk;
-
-$vk = vk::create(ТОКЕН, '5.126');
-$vk->initVars($id);
-$vk->sendImage($id, '../cat.png', ['message' => 'Вот тебе котики!']);
-$vk->sendImage($id, ['../cat2.png', '../cat3.png']);
-```
-
-## sendDoc
-Отправляет файл/ы как документ/ы указанному peer_id
-### Параметры метода
-|#  |Название  |    Тип          |    Описание             |
-|:-:|:-:|:--------------: |-------------          |
-|1  |**id\***  | `int`          | peer_id получателя   |
-|2  |**local_file_paths\***  | `string`\|`array`          | путь до файла или массив путей   |
-|3  |params  | `array`          | Ассоциативный массив параметров для messages.send   |
-### Возвращает
-Массив `response` с результатом выполнения метода ВК messages.send в случае успешного выполнения и `Exception` в случае ошибки
-
-### Примеры использования
-```php
-<?php
-require_once "vendor/autoload.php";
-use DigitalStars\SimpleVK\SimpleVK as vk;
-
-$vk = vk::create(ТОКЕН, '5.126');
-$vk->initVars($id);
-$vk->sendDoc($id, '../cat.png', ['message' => 'Вот тебе котики!']);
-$vk->sendDoc($id, ['../cat2.png', '../cat3.png']);
-```
-
-## sendVoice
-Отправляет звуковой файл как голосовое сообщение указанному peer_id
-### Параметры метода
-|#  |Название  |    Тип          |    Описание             |
-|:-:|:-:|:--------------: |-------------          |
-|1  |**id\***  | `int`          | peer_id получателя   |
-|2  |**local_file_path\***  | `string`          | путь до файла или массив путей   |
-|3  |params  | `array`          | Ассоциативный массив параметров для messages.send   |
-### Возвращает
-Массив `response` с результатом выполнения метода ВК messages.send в случае успешного выполнения и `Exception` в случае ошибки
-
-### Примеры использования
-```php
-<?php
-require_once "vendor/autoload.php";
-use DigitalStars\SimpleVK\SimpleVK as vk;
-
-$vk = vk::create(ТОКЕН, '5.126');
-$vk->initVars($id);
-$vk->sendVoice($id, 'voice.mp3');
-```
-### Памятка по работе с голосовыми сообщениями
-todo: заполнить позже
-
-
+## setProxy
+## groupInfo
+## sendWallComment
+## isAdmin
+## dateRegistration
 ## placeholders
 
 Создаёт алиас на `id` пользователя
