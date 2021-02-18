@@ -594,6 +594,6 @@ try {
 ```
 > Т.к. `owner` и `admin` это текст, то они являются `true`. Поэтому можно использовать так:
 ```php 
-if($vk->isAdmin($peer_id, $user_id))
+if($vk->isAdmin($user_id, $peer_id))
 ```
 ## setProxy
