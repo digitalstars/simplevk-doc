@@ -5,7 +5,7 @@ title: SimpleVK
 ## Подключение
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 ```
   
@@ -58,7 +58,7 @@ $vk = vk::create($auth);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126')->setConfirm('6628bb69');
@@ -76,14 +76,14 @@ $vk = vk::create(ТОКЕН, '5.126')->setConfirm('6628bb69');
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126')->setSecret('my_secret_str')->setConfirm('6628bb69');
 ```
 
 ## initVars
-Метод принимает переменные по ссылке и записывает в них определенные значения из пришедшего от ВК события, если они доступны. Если данные не пришли, то в переменные будет передан null
+Метод принимает переменные по ссылке и записывает в них определенные значения из пришедшего от ВК события, если они доступны. Если данные не пришли, то в переменные будет передан `null`
 ### Параметры метода
 |#  |Название  |    Тип          |    Будет передано значение             |
 |:-:|-|:--------------: |-------------          |
@@ -100,14 +100,14 @@ $vk = vk::create(ТОКЕН, '5.126')->setSecret('my_secret_str')->setConfirm('6
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
 //в $data хранится все данные события
 $data = $vk->initVars($peer_id, $user_id, $type, $message, $payload, $msg_id, $attachments);
 if($type == 'message_new') { //проверяем тип события
-    $vk->reply("Твой user_id - ".$user_id);
+    $vk->msg("Твой user_id - ".$user_id)->send();
 }
 ```
 
@@ -136,7 +136,7 @@ $vk->initVars($id, $user_id, $type, $message);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -159,7 +159,7 @@ $vk = vk::create(ТОКЕН, '5.126')->initPeerID($id);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -183,7 +183,7 @@ $vk = vk::create(ТОКЕН, '5.126')->initText($text);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -207,7 +207,7 @@ $vk = vk::create(ТОКЕН, '5.126')->initPayload($payload);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -231,7 +231,7 @@ $vk = vk::create(ТОКЕН, '5.126')->initUserID($user_id);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -255,7 +255,7 @@ $vk = vk::create(ТОКЕН, '5.126')->initType($type);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -273,7 +273,7 @@ $vk = vk::create(ТОКЕН, '5.126')->initData($data);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -296,7 +296,7 @@ $attachments = $vk->getAttachments();
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -328,7 +328,7 @@ $vk->clientSupport($keyboard, null, null, $buttons);
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ЛОГИН, ПАРОЛЬ, '5.126')->group(3344678);
@@ -348,7 +348,7 @@ $vk->sendMessage(123456, 'Пишу от лица группы!');
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -372,7 +372,7 @@ $vk->reply("Визуализация массива: $url2");
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -389,19 +389,21 @@ $vk->messages_send(['message' => 'Привет', 'user_id' => 89846036]);
 ### Параметры метода
 |#  |Название  |    Тип          |    Описание             |
 |:-:|:-:|:--------------: |-------------          |
-|1  |user_url  | `string`\|`int`          | Ссылка на пользователя в любом виде или user_id   |
+|1  |user_url  | `string`\|`int`\|`array`          | Ссылка на пользователя в любом виде или `user_id` или массив пользователей в виде `user_id` или ссылок|
 |1  |scope   | `array`          | Ассоциативный массив доп. параметров для users.get  |
 ### Возвращает
-Первый элемент массива `response` из результата выполнения `users.get`
-
+Первый элемент массива `response` из результата выполнения `users.get`.  
+  
+Если вызвать без параметров с токеном пользователя, то метод вернет информацию о текущем аккаунте.
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
 $vk->userInfo('https://vk.com/durov');
+$vk->userInfo(['https://vk.com/durov', 2, 3]);
 //или
 $info = $vk->userInfo(1, ['fields' => 'sex']);
 print_r($info);
@@ -425,10 +427,11 @@ print_r($info);
 ### Возвращает
 Первый элемент массива `response` из результата выполнения `groups.getById`
 
+Если вызвать без параметров с токеном сообщества, то метод вернет информацию о текущем сообществе.
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -448,9 +451,9 @@ print_r($info);
 ## setProxy
 ## sendWallComment
 ## placeholders
-Делает алиас используя `id` того, от кого пришло событие, либо подставив необходимый `id`
+Делает алиас используя `id` того, от кого пришло событие, либо подставив необходимый `id`.  
 Это работает как с пользователями, так и с сообществами.  
-> Если сообщество, то любой плейсхолдер будет заменен на полное название сообщества с упоминанием или без
+> Если событие от сообщества, то любой плейсхолдер будет заменен на полное название сообщества с упоминанием или без
 ### Возможные варианты:
 `~fn~` - Имя  
 `~!fn~` - Имя в виде упоминания `[id|Имя]`  
@@ -471,7 +474,7 @@ print_r($info);
 
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -483,13 +486,13 @@ $vk->msg('Привет ~!full~')->send(); //Привет [id|Имя Фамили
 ## responseGeneratorRequest
 ## generatorRequest
 ## getAllWalls
-Получить все посты
+Получить все посты со стены сообщества или пользователя
 
 ### Параметры метода
 
 |# |Название | Тип | Описание | 
 |:-:|:-:|:--------------: |------------- | 
-|1 |**id\***  | `int`          | int |
+|1 |**id\***  | `int`          | peer_id |
 
 ### Возвращает
 
@@ -499,7 +502,7 @@ $vk->msg('Привет ~!full~')->send(); //Привет [id|Имя Фамили
 
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
@@ -527,13 +530,13 @@ foreach ($vk->getAllWalls(1) as $post) {
 
 ## dateRegistration
 
-Получить дату регистрации
+Получить дату регистрации пользователя
 
 ### Параметры метода
 
 |# |Название | Тип | Описание | 
 |:-:|:-:|:--------------: |------------- | 
-|1 |**id\***  | `int`          | user_id Пользователя |
+|1 |**user_id\***  | `int`          | `user_id` Пользователя |
 
 ### Возвращает
 
@@ -543,11 +546,11 @@ foreach ($vk->getAllWalls(1) as $post) {
 
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
-$vk->dateRegistration(1); //"20:27:12 23.09.2006"
+print $vk->dateRegistration(1); //"20:27:12 23.09.2006"
 ```
 ## sendWallComment
 ## eventAnswerEditKeyboard
@@ -581,7 +584,7 @@ $vk->dateRegistration(1); //"20:27:12 23.09.2006"
 ### Примеры использования
 ```php
 <?php
-require_once "vendor/autoload.php";
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
