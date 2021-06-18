@@ -333,9 +333,10 @@ $attachments = $vk->getAttachments();
 |#  |Название  |    Тип          |    Описание             |
 |:-:|:-:|:--------------: |-------------          |
 |1  |&keyboard  | `bool`          |  поддерживается ли клавиатура ботов клиентом   |
-|2  |&inline_keyboard  | `bool`          |  поддерживается ли inline-клавиатура ботов клиентом   |
-|2  |&carousel  | `bool`          |  поддерживаются ли карусели клиентом   |
+|2  |&inline  | `bool`          |  поддерживается ли inline-клавиатура ботов клиентом   |
+|2  |&carousel  | `bool`          |  поддерживаются ли [карусели](https://vk.com/dev/bot_docs_templates?f=5.1.+%D0%9A%D0%B0%D1%80%D1%83%D1%81%D0%B5%D0%BB%D0%B8) клиентом   |
 |3  |&button_actions  | `array`          |  массив кнопок, которые поддерживает клиент   |
+|3  |&lang_id  | `int`          |   [id](https://vk.com/dev/api_requests?f=2.+%CE%E1%F9%E8%E5+%EF%E0%F0%E0%EC%E5%F2%F0%FB) используемого языка   |
 ### Возвращает
 Массив `$data['object']['client_info']` 
 
@@ -346,7 +347,7 @@ require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
-$support = $vk->clientSupport($keyboard, $inline, $carousel, $buttons);
+$support = $vk->clientSupport($keyboard, $inline, $carousel, $button_actions, $lang_id);
 if($keyboard) {
     //клавиатура поддерживается
 }
@@ -431,14 +432,15 @@ $vk->messages_send(['message' => 'Привет', 'user_id' => 89846036]);
 
 
 ## userInfo
-Обертка над `users.get`
+Возвращает информацию о пользователе. Обертка над [users.get](https://vk.com/dev/users.get)
 ### Параметры метода
 |#  |Название  |    Тип          |    Описание             |
 |:-:|:-:|:--------------: |-------------          |
-|1  |user_url  | `string`\|`int`\|`array`          | Ссылка на пользователя в любом виде или `user_id` или массив пользователей в виде `user_id` или ссылок|
-|1  |scope   | `array`          | Ассоциативный массив доп. параметров для users.get  |
+|1  |users_url  | `string`\|`int`\|`array`          | Ссылка на пользователя в любом виде или `user_id` или массив пользователей в виде `user_id` или ссылок|
+|2  |fields   | `array`\|`string`       | Одно или несколько дополнительных полей в виде массива или строки |
+|3  |name_case   | `string`       | Падеж для склонения имени и фамилии пользователя |
 ### Возвращает
-Первый элемент массива `response` из результата выполнения `users.get`.  
+Первый элемент массива `response` из результата выполнения `users.get`, если информация запрашивалась по одному пользователю. Иначе возвращает несколько массивов с данными.
   
 Если вызвать без параметров с токеном пользователя, то метод вернет информацию о текущем аккаунте.
 ### Примеры использования
@@ -451,7 +453,7 @@ $vk = vk::create(ТОКЕН, '5.126');
 $vk->userInfo('https://vk.com/durov');
 $vk->userInfo(['https://vk.com/durov', 2, 3]);
 //или
-$info = $vk->userInfo(1, ['fields' => 'sex']);
+$info = $vk->userInfo(1, 'sex', 'dat');
 print_r($info);
 /*[
 'first_name' => 'Павел',
@@ -465,13 +467,14 @@ print_r($info);
 
 
 ## groupInfo
-Обертка над `groups.getById`
+Возвращает информацию о группах. Обертка над [groups.getById](https://vk.com/dev/groups.getById)
 ### Параметры метода
 |#  |Название  |    Тип          |    Описание             |
 |:-:|:-:|:--------------: |-------------          |
-|1  |group_url  | `string`\|`int`          | id или короткие имена сообществ, можно ссылкой |
+|1  | group_url  | `string`\|`int`\|`array`          | Ссылка на сообщество в любом виде или `group_id`|
+|2  | fields  | `array`\|`string`          | Одно или несколько дополнительных полей в виде массива или строки |
 ### Возвращает
-Первый элемент массива `response` из результата выполнения `groups.getById`
+Первый элемент массива `response` из результата выполнения `groups.getById`, если информация запрашивалась по одному сообществу. Иначе возвращает несколько массивов с данными.
 
 Если вызвать без параметров с токеном сообщества, то метод вернет информацию о текущем сообществе.
 ### Примеры использования
@@ -482,6 +485,7 @@ use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
 $vk->groupInfo('https://vk.com/tower_of_destiny');
+$vk->groupInfo(['https://vk.com/tower_of_destiny', 1234], 'description');
 //или
 $info = $vk->groupInfo(193655066);
 print_r($info);
