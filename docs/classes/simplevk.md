@@ -266,6 +266,52 @@ $vk->initData($data);
 $vk = vk::create(ТОКЕН, '5.126')->initData($data);
 ```
 
+## initMsgID
+Метод принимает переменную по ссылке и записывает в нее значение `$data['object']['id']` в виде массива из пришедшего события, если такое поле есть. Если нет, то записывает `null`
+### Параметры метода
+|#  |Название  |    Тип          |    Описание             |
+|:-:|:-:|:--------------: |-------------          |
+|1  |**mid\***  | `int`          | ID сообщения   |
+### Возвращает
+`$this` - экземпляр класса, который вызвал этот метод
+
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->initMsgID($mid);
+```
+Также можно использовать цепочку вызовов
+```php
+$vk = vk::create(ТОКЕН, '5.126')->initMsgID($mid);
+```
+
+## initConversationMsgID
+Метод принимает переменную по ссылке и записывает в нее значение `$data['object']['conversation_message_id']` в виде массива из пришедшего события, если такое поле есть. Если нет, то записывает `null`
+### Параметры метода
+|#  |Название  |    Тип          |    Описание             |
+|:-:|:-:|:--------------: |-------------          |
+|1  |**cmid\***  | `int`          | conversation_message_id   |
+### Возвращает
+`$this` - экземпляр класса, который вызвал этот метод
+
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->initConversationMsgID($cmid);
+```
+Также можно использовать цепочку вызовов
+```php
+$vk = vk::create(ТОКЕН, '5.126')->initConversationMsgID($cmid);
+```
+
 ## getAttachments
 ### Возвращает
 Сформированный массив вложений из события, разбитый по категориям
@@ -449,7 +495,23 @@ print_r($info);
 ```
 
 ## setProxy
-## sendWallComment
+Установка проксирования трафика через `socks4`/`socks5`
+### Параметры метода
+|#  |Название  |    Тип          |    Описание             |
+|:-:|:-:|:--------------: |-------------          |
+|1  |**proxy\***  | `string`          | Адрес прокси-сервера   |
+|2  |pass  | `string`          | Пароль, если есть   |
+
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+vk::setProxy("socks4://149.56.1.48:8181");
+$vk = vk::create(ТОКЕН, '5.126');
+```
+
 ## placeholders
 Делает алиас используя `id` того, от кого пришло событие, либо подставив необходимый `id`.  
 Это работает как с пользователями, так и с сообществами.  
