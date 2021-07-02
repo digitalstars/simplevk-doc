@@ -386,8 +386,8 @@ $vk->clientSupport($keyboard, null, null, $buttons);
 require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
-$vk = vk::create(ЛОГИН, ПАРОЛЬ, '5.126')->group(3344678);
-$vk->sendMessage(123456, 'Пишу от лица группы!');
+$vk = vk::create(ТОКЕН_ЮЗЕРА, '5.126')->group(3344678);
+$vk->msg('Пишу от лица группы!')->send(123456);
 ```
 
 
@@ -409,9 +409,9 @@ use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
 $url = $vk->json_online();
-$vk->reply("Визуализация данных этого события: $url");
+$vk->msg("Визуализация данных этого события: $url")->send();
 $url2 = $vk->json_online([1,2,3 => '4']);
-$vk->reply("Визуализация массива: $url2");
+$vk->msg("Визуализация массива: $url2")->send();
 ```
 
 
@@ -712,9 +712,6 @@ foreach ($vk->getAllDialogs() as $dialog) {
 ```
 
 
-
-## generateCarousel
-## generateKeyboard
 ## buttonCallback
 ## buttonText
 ## buttonApp
