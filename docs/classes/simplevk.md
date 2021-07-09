@@ -392,6 +392,28 @@ $vk->msg('Пишу от лица группы!')->send(123456);
 
 
 
+## reply
+Метод для отправки сообщения туда, откуда пришло событие (лс/беседа)
+### Параметры метода
+|#  |Название  |    Тип          |    Описание             |
+|:-:|:-:|:--------------: |-------------          |
+|1  |**message**\*  | `string`   | Сообщение   |
+### Возвращает
+Результат выполнения метода [messages.send](https://vk.com/dev/messages.send)
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$vk->reply("Привет, я бот");
+```
+> Если вам нужно добавить доп параметры для `messages.send`, то отправляйте сообщение через класс Message
+
+
+
+
 ## json_online
 Получить ссылку на отображение переданного массива/json в виде json дерева на сайте <https://jsoneditoronline.org/>. Удобно использовать при дебаге больших массивов.  
 > Если не передавать в метод данные, то по умолчанию будет сформирована ссылка с данными события пришедшего от ВК.
@@ -523,7 +545,7 @@ print_r($info);
 require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
-vk::setProxy("socks4://149.56.1.48:8181");
+vk::setProxy("socks4://185.37.211.222:43358");
 $vk = vk::create(ТОКЕН, '5.126');
 ```
 
@@ -555,6 +577,7 @@ use DigitalStars\SimpleVK\SimpleVK as vk;
 $vk = vk::create(ТОКЕН, '5.126');
 $vk->reply('Привет ~full~'); //Привет Имя Фамилия
 $vk->reply('Привет ~!full~'); //Привет [id|Имя Фамилия]
+print $vk->placeholders('~ln|1~'); //Дуров
 ```
 
 
@@ -712,18 +735,320 @@ foreach ($vk->getAllDialogs() as $dialog) {
 ```
 
 
-## buttonCallback999999
-## buttonText
-## buttonApp
-## buttonDonateToUser
-## buttonDonateToGroup
-## buttonPayToUser
-## buttonPayToGroup
-## buttonOpenLink
-## buttonLocation
-## sendCarousel
-## sendKeyboard
+## О цветах кнопок
+У всех кнопок ВК есть 4 цвета. Внутри фреймворка используются более понятные названия цветов при создании кнопок:
+```php
+'primary' => 'blue',
+'default' => 'white',
+'negative' => 'red',
+'positive' => 'green'
+```
 
+
+
+## buttonCallback
+Метод генерирует callback кнопку
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**text**\* | `string`          | Текст на кнопке |
+|2 |color | `string`          | Цвет кнопки. По умолчанию `white` |
+|3 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonCallback('Кнопка', 'red', ['my_payload' => 123]);
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+## buttonText
+Метод генерирует текстовую кнопку
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**text**\* | `string`          | Текст на кнопке |
+|2 |color | `string`          | Цвет кнопки. По умолчанию `white` |
+|3 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonText('Кнопка', 'red', ['my_payload' => 123]);
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+## buttonApp
+Метод генерирует кнопку VK Apps
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**text**\* | `string`          | Текст на кнопке |
+|2 |**app_id**\* | `int`          | ID mini apps приложения |
+|3 |owner_id| `int`          | Отрицательный идентификатор сообщества, в котором установлено приложение |
+|4 |hash | `string`          | Хэш для навигации в приложении, будет передан в строке параметров запуска после символа #  |
+|5 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonApp('Открыть приложение', 7055214, -182985865);
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+
+## buttonDonateToUser
+Метод генерирует кнопку для перевода денег пользователю
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**user_id**\* | `int`          | ID пользователя, кому уйдет донат |
+|2 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonDonateToGroup(89846036);
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+
+## buttonDonateToGroup
+Метод генерирует кнопку для перевода денег сообществу
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**group_id**\* | `int`          | отрицательное ID сообщества, куда уйдет донат |
+|2 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonDonateToGroup(-182985865);
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+
+## buttonPayToUser
+Метод генерирует кнопку для перевода фиксированной суммы денег пользователю
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**user_id**\* | `int`          | ID пользователя, кому уйдет донат |
+|2 |**amount**\* | `int`          | Сумма в рублях |
+|3 |description | `string`          | Комментарий к платежу |
+|4 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonPayToUser(89846036, 50, 'На мороженное');
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+## buttonPayToGroup
+Метод генерирует кнопку для перевода фиксированной суммы денег сообществу
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**user_id**\* | `int`          | ID пользователя, кому уйдет донат |
+|2 |**amount**\* | `int`          | Сумма в рублях |
+|3 |description | `string`          | Комментарий к платежу |
+|4 |data | `object`          | словарь с произвольными параметрами |
+|5 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonPayToGroup(-182985865, 50, 'На мороженное');
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+
+## buttonOpenLink
+Метод генерирует кнопку для открытия ссылки
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**link**\* | `string`          | Ссылка на сайт |
+|2 |label | `string`          | Текст на кнопке |
+|3 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+> Обязательно нужно указывать полную ссылку вместе с http или https, иначе метод выдаст ошибку
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonOpenLink('http://google.com', 'Открыть гугл');
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+## buttonLocation
+Метод генерирует кнопку для отправки гео-позиции
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |payload | `array`          | Массив полезной нагрузки для кнопки. По умолчанию `null` |
+### Возвращает
+Массив со сгенерированной кнопкой, готовой для использования
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$btn = $vk->buttonLocation();
+$vk->msg('Лови кнопку!')->kbd($btn)->send();
+```
+
+
+
+## eventAnswerOpenApp
+Метод открывает mini apps приложение у пользователя, который нажал на callback кнопку.  
+> Работает только при событии `message_event`
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**app_id**\* | `int`          | ID mini apps приложения |
+|2 |owner_id | `int`          | Отрицательный идентификатор сообщества, в котором установлено приложение |
+|3 |hash | `string`          | Хэш для навигации в приложении, будет передан в строке параметров запуска после символа # |
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126')->initType($type);
+if($type == 'message_event') {
+    $vk->eventAnswerOpenApp(7055214, -182985865);
+}
+```
+
+
+## eventAnswerOpenLink
+Метод открывает ссылку у пользователя, который нажал на callback кнопку.
+> Работает только при событии `message_event`
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**link**\* | `string`          | ID mini apps приложения |
+### Примеры использования
+> Обязательно нужно указывать полную ссылку вместе с http или https, иначе метод выдаст ошибку
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126')->initType($type);
+if($type == 'message_event') {
+    $vk->eventAnswerOpenLink('http://google.com');
+}
+```
+
+
+## eventAnswerSnackbar
+Метод исчезающее сообщение у пользователя, который нажал на callback кнопку.
+> Работает только при событии `message_event`
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**text**\* | `int`          | Текст исчезающего сообщения |
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126')->initType($type);
+if($type == 'message_event') {
+    $vk->eventAnswerSnackbar('Привет');
+}
+```
+
+
+## sendAllChats
+Метод делает рассылку по всем чатам. Работает как на пользователе, так и на сообществе(сообщение отправляется в чаты, куда добавили бота). Если картинка передается файлом, то перед рассылкой бот загружает ее один раз и получает attachment, который затем прикрепляет к каждому сообщению.
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**message**\* | `Message object`          | Сформированный объект класса Message |
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$msg = $vk->msg('Текст рассылки')->img('cat.jpg');
+$vk->sendAllChats($msg);
+```
+
+
+
+## sendAllDialogs
+Метод делает рассылку по всем диалогам. Работает как на пользователе, так и на сообществе. Если картинка передается файлом, то перед рассылкой бот загружает ее один раз и получает attachment, который затем прикрепляет к каждому сообщению.
+### Параметры метода
+|# |Название | Тип | Описание |
+|:-:|:-:|:--------------: |------------- |
+|1 |**message**\* | `Message object`          | Сформированный объект класса Message |
+### Примеры использования
+```php
+<?php
+require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
+use DigitalStars\SimpleVK\SimpleVK as vk;
+
+$vk = vk::create(ТОКЕН, '5.126');
+$msg = $vk->msg('Текст рассылки')->img('cat.jpg');
+$vk->sendAllDialogs($msg);
+```
 
 
 ## dateRegistration
@@ -743,17 +1068,6 @@ use DigitalStars\SimpleVK\SimpleVK as vk;
 $vk = vk::create(ТОКЕН, '5.126');
 print $vk->dateRegistration(1); //"20:27:12 23.09.2006"
 ```
-
-
-
-## sendWallComment
-## eventAnswerEditKeyboard
-## eventAnswerOpenApp
-## eventAnswerOpenLink
-## eventAnswerSnackbar
-## sendAllChats
-## sendAllDialogs
-
 
 
 ## isAdmin
@@ -782,7 +1096,7 @@ $vk->initVars($peer_id, $user_id);
 try {
     $vk->isAdmin($user_id, $peer_id);
 } catch (SimpleVkException $e) {
-    die($e->getMessage());
+    print($e->__toString());
 }
 ```
 > Т.к. `owner` и `admin` это текст, то они являются `true`. Поэтому можно использовать так:
