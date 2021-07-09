@@ -8,7 +8,7 @@ title: Примеры ботов
 require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 $vk = vk::create(ТОКЕН, '5.120')->setConfirm(STR); //STR - строка подтверждения сервера
-$vk->msg('Привет, ~!fn~')->send();
+$vk->reply('Привет, ~!fn~');
 ```
 
 
@@ -22,7 +22,7 @@ $vk->setUserLogError(ID); //ID - это id vk, кому бот будет отп
 $data = $vk->initVars($peer_id, $user_id, $type, $message); //инициализация переменных из события
 if($type == 'message_new') {
     if($message == 'Привет') {
-        $vk->msg('Привет, ~!fn~')->send();
+        $vk->reply('Привет, ~!fn~');
     }
 }
 ```
@@ -44,7 +44,7 @@ $vk->listen(function () use ($vk) {
     $data = $vk->initVars($peer_id, $user_id, $type, $message); //инициализация переменных из события
     if($type == 'message_new') {
         if($message == 'Привет') {
-            $vk->msg('Привет, ~!fn~')->send();
+            $vk->reply('Привет, ~!fn~');
         }
     }
 });
@@ -160,7 +160,7 @@ $lp->setUserLogError(12345); // В случае ошибки отправить 
 $lp->listen(function ($data) use ($lp) {                       // Получение событий из LongPool
     $lp->initVars($id, $user_id, $type, $message, $payload, $msg_id, $attachments);   // Парсинг полученных событий
     if ($type == 'message_new') {                                     // Если событие - новое сообщение
-        $lp->msg("Тестовое сообщение")->send();                       // Отправка ответного сообщения
+        $lp->reply("Тестовое сообщение");                       // Отправка ответного сообщения
     }
 });
 ```
@@ -351,7 +351,7 @@ $vk->initVars($null, $user_id, $type, $message, $payload);
 
 if($type == 'message_new') {
     if($payload) {
-        $vk->msg('Кнопки можно нажимать только с мобильных клиентов, поддерживающих callback кнопки!')->send();
+        $vk->reply('Кнопки можно нажимать только с мобильных клиентов, поддерживающих callback кнопки!');
         exit();
     }
 }
@@ -405,12 +405,12 @@ try {
         $opponent = $store->get('wait');  // получить id юзера на поиске
         if (!$opponent) {  // Если его не существует
             $store->sset('wait', [$user_id, $peer_id]);  // Текущий юзер встаёт в очередь
-            $vk->msg("Вы встали в очередь и ожидаете игру")->send();  // Ответить
+            $vk->reply("Вы встали в очередь и ожидаете игру");  // Ответить
             return 1;  // Прервать выполнение события
         }
 
         if ($opponent[0] == $user_id) {  // Если в поиске тот же, кто запросил снова поиск
-            $vk->msg("Вы уже в поиске")->send();  // Ответить
+            $vk->reply("Вы уже в поиске");  // Ответить
             return 1; // Прервать выполнение события
         }
 

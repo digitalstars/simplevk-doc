@@ -109,7 +109,7 @@ $vk = vk::create(ТОКЕН, '5.126');
 //в $data хранится все данные события
 $data = $vk->initVars($peer_id, $user_id, $type, $message, $payload, $msg_id, $attachments);
 if($type == 'message_new') { //проверяем тип события
-    $vk->msg("Твой user_id - ".$user_id)->send();
+    $vk->reply("Твой user_id - ".$user_id);
 }
 ```
 ### Дополнительные возможности и их разбор
@@ -409,9 +409,9 @@ use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
 $url = $vk->json_online();
-$vk->msg("Визуализация данных этого события: $url")->send();
+$vk->reply("Визуализация данных этого события: $url");
 $url2 = $vk->json_online([1,2,3 => '4']);
-$vk->msg("Визуализация массива: $url2")->send();
+$vk->reply("Визуализация массива: $url2");
 ```
 
 
@@ -553,8 +553,8 @@ require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
 use DigitalStars\SimpleVK\SimpleVK as vk;
 
 $vk = vk::create(ТОКЕН, '5.126');
-$vk->msg('Привет ~full~')->send(); //Привет Имя Фамилия
-$vk->msg('Привет ~!full~')->send(); //Привет [id|Имя Фамилия]
+$vk->reply('Привет ~full~'); //Привет Имя Фамилия
+$vk->reply('Привет ~!full~'); //Привет [id|Имя Фамилия]
 ```
 
 
@@ -637,7 +637,7 @@ foreach ($vk->getAllGroupsFromUser() as $group) {
 
 ## getAllMembers
 Получить всех участников сообщества. Готовый генератор с оберткой над [groups.getMembers](https://vk.com/dev/groups.getMembers)
-### Параметры метода
+### Параметры методаК
 |# |Название | Тип | Описание |
 |:-:|:-:|:--------------: |------------- |
 |1 |group_id | `int`          | group_id |
@@ -712,7 +712,7 @@ foreach ($vk->getAllDialogs() as $dialog) {
 ```
 
 
-## buttonCallback
+## buttonCallback999999
 ## buttonText
 ## buttonApp
 ## buttonDonateToUser
