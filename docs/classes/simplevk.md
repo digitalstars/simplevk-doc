@@ -131,7 +131,7 @@ print $result['error']['error_msg']; //Invalid user id
 |#  |Название  |    Тип          |    Описание             |
 |:-:|-|:--------------: |-------------          |
 |1  | flag  | `bool`         | `true` если нужно выключить, и `false` если не надо|
-### Примеры использования
+### Примеры использованияph
 ```php
 <?php
 require_once __DIR__.'/vendor/digitalstars/simplevk/autoload.php';
