@@ -1,6 +1,6 @@
-/node_modules
+/node_modules/
 /docs/.vuepress/dist/
-/docs/.vuepress/.temp
-/docs/.vuepress/.cache
+/docs/.vuepress/.temp/
+/docs/.vuepress/.cache/
 /.idea
 pnpm-lock.yaml
