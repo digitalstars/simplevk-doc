@@ -21,13 +21,12 @@ export default defineUserConfig({
 
   title: 'SimpleVK 3',
   description: "Документация по библиотеке для simpleVK-php",
-  base: '/v3/',
   // редирект с главной
   clientConfigFile: path.resolve(__dirname, 'client.js'),
 
   bundler: viteBundler(),
   theme: defaultTheme({
-    logo: '/assets/logo.png',
+    logo: '/assets/logo.svg',
     navbar: [
       // { text: 'v2.x', link: "https://simplevk.scripthub.ru/"},
       { text: 'GitHub', link: 'https://github.com/digitalstars/simpleVK-php' },

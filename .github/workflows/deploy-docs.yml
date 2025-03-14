@@ -1,50 +1,54 @@
+# Название workflow
+name: Build and Deploy VuePress Docs
 
-name: Deploy Docs
-
+# Триггер: запуск при пуше в main
 on:
   push:
     branches:
-      # make sure this is the branch you are using
-      - main
+      - master
 
-permissions:
-  contents: write
-
+# Задача: сборка и деплой
 jobs:
-  deploy-gh-pages:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-latest  # Используем Ubuntu, где Docker уже частично готов
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      # Шаг 1: Клонируем репозиторий
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # Зачем: Загружает код из репозитория (Dockerfile, VuePress-файлы) в рабочую среду.
+
+      # Шаг 2: Настраиваем Docker Buildx в рабочей среде github
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        # Зачем: Устанавливает Buildx для сборки и пуша образов. Это нужно, даже если Docker есть,
+        # так как Buildx добавляет поддержку многоплатформенной сборки и удобный пуш.
+
+      # Шаг 3: Логинимся в Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          fetch-depth: 0
-          # if your docs needs submodules, uncomment the following line
-          # submodules: true
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        # Зачем: Авторизуемся в Docker Hub, чтобы пушить образ. Секреты берутся из настроек репозитория.
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      # Шаг 4: Собираем и пушим образ
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
         with:
-          run_install: true
-          version: 8
+          context: .  # Корневая директория для сборки
+          file: ./Dockerfile.prod  # Путь к Dockerfile
+          push: true  # Пушим образ после сборки
+          tags: digitalstars0/simplevk-php-doc:latest  # Имя образа в Docker Hub
+        # Что происходит: Собирает образ (VuePress в Node.js, затем Alpine) и пушит в Docker Hub.
 
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # Шаг 5: Деплой на сервер через SSH
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3  # Готовое действие для SSH-команд
         with:
-          node-version: 20
-          cache: pnpm
-
-
-      - name: Build Docs
-        env:
-          NODE_OPTIONS: --max_old_space_size=8192
-        run: |-
-          pnpm run docs:build
-          > docs/.vuepress/dist/.nojekyll
-
-      - name: Deploy Docs
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          # This is the branch where the docs are deployed to
-          branch: gh-pages
-          folder: docs/.vuepress/dist
+          host: ${{ secrets.SERVER_IP }}  # IP сервера из секретов
+          username: ${{ secrets.SERVER_USER }}  # Пользователь из секретов
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH-ключ из секретов
+          script: |
+            docker pull digitalstars0/simplevk-php-doc:latest
+            docker-compose -f ${{ secrets.COMPOSE_PATH }} up -d vuepress-prod

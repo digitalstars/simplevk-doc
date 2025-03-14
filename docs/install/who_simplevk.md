@@ -1,5 +1,6 @@
 ---
 title: Почему SimpleVK?
+sidebarDepth: 0
 ---
 
 # Почему SimpleVK?

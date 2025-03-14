@@ -1,0 +1,15 @@
+FROM node:23.9 AS development
+
+WORKDIR /app
+
+# Устанавливаем pnpm глобально
+RUN npm install -g pnpm
+
+# Копируем только файлы зависимостей
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
+
+# Копируем остальной код
+COPY . .
+
+EXPOSE 8080

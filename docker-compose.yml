@@ -1,0 +1,37 @@
+services:
+  vuepress-dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.dev
+    container_name: vuepress-dev
+    ports:
+      - "8080:8080"
+    develop:
+      watch:
+        - action: sync
+          path: ./docs
+          target: /app/docs
+          ignore:
+            - node_modules/
+            - .vuepress/dist/
+            - .vuepress/.temp/
+            - .vuepress/.cache/
+        - action: rebuild
+          path: ./package.json
+    command: pnpm run docs:dev
+    environment:
+      - NODE_ENV=development
+
+  vuepress-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: vuepress-prod
+    restart: always
+    volumes:
+      - docs-volume:/docs  # Общий том для вывода скомпилированных файлов
+
+volumes:
+  docs-volume:  # Общий том между контейнерами
+  caddy_data:
+  caddy_config:
