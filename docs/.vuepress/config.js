@@ -19,6 +19,7 @@ export default defineUserConfig({
     // ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
   ],
 
+  base: "/simplevk-doc/",
   title: 'SimpleVK 3',
   description: "Документация по библиотеке для simpleVK-php",
   // редирект с главной
