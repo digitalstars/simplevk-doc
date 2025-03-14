@@ -34,7 +34,7 @@
    ```
 2. Запустите Docker-контейнер:
    ```bash
-    docker compose up --watch vuepress-dev
+   docker compose up --watch vuepress-dev
    ```
 
 3. Откройте документацию в браузере:  
