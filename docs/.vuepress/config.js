@@ -17,6 +17,7 @@ export default defineUserConfig({
     // ['meta', { property: 'og:type', content: 'website' }],
     // ['meta', { property: 'og:image', content: '/images/preview.jpg' }], // Картинка для соцсетей
     // ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['link', { rel: 'icon', href: '/simplevk-doc/favicon.ico' }]
   ],
 
   base: "/simplevk-doc/",
@@ -28,6 +29,7 @@ export default defineUserConfig({
   bundler: viteBundler(),
   theme: defaultTheme({
     logo: '/assets/logo.svg',
+
     navbar: [
       // { text: 'v2.x', link: "https://simplevk.scripthub.ru/"},
       { text: 'GitHub', link: 'https://github.com/digitalstars/simpleVK-php' },
