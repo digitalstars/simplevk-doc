@@ -1,6 +1,7 @@
 import {defineConfig} from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
+
 export default defineConfig({
     lang: 'ru-RU',
     title: "SimpleVK-PHP",
@@ -25,6 +26,26 @@ export default defineConfig({
 
     themeConfig: {
 
+        editLink: {
+            pattern: 'https://github.com/digitalstars/simplevk-doc/edit/master/docs/:path',
+            text: 'Редактировать страницу'
+        },
+        outline: { label: 'Содержание страницы' },
+        docFooter: {
+            prev: 'Предыдущая страница',
+            next: 'Следующая страница'
+        },
+        lastUpdated: {
+            text: 'Обновлено'
+        },
+        darkModeSwitchLabel: 'Оформление',
+        lightModeSwitchTitle: 'Переключить на светлую тему',
+        darkModeSwitchTitle: 'Переключить на тёмную тему',
+        sidebarMenuLabel: 'Меню',
+        returnToTopLabel: 'Вернуться к началу',
+        langMenuLabel: 'Изменить язык',
+        skipToContentLabel: 'Перейти к содержимому',
+
         logo: '/logo.png',
         nav: [
             // { text: 'Home', link: '/' },
@@ -36,7 +57,24 @@ export default defineConfig({
         ],
 
         search: {
-            provider: 'local'
+            provider: 'local',
+            options: {
+                translations: {
+                    button: {
+                        buttonText: 'Поиск',
+                        buttonAriaLabel: 'Поиск',
+                    },
+                    modal: {
+                        noResultsText: 'Нет результатов для',
+                        resetButtonTitle: 'Очистить запрос',
+                        footer: {
+                            selectText: 'выбрать',
+                            navigateText: 'перейти',
+                            closeText: 'закрыть',
+                        },
+                    },
+                },
+            }
         },
 
         sidebar: [
