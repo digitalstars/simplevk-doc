@@ -1,16 +1,12 @@
----
-title: Системные требования и установка
-sidebarDepth: 0
----
-
 # Системные требования и установка
-PHP: `7.0+`  
-Модули PHP: `mbstring`, `curl`  
+## Требования
+* PHP: `8.0-8.4+`  
+* Модули PHP: `mbstring`, `curl`, `openssl`
 
-## Установка `PHP`,`mbstring`,`curl` в Debian/Ubuntu: 
-7.0 заменить на свою версию
+## Установка на Debian/Ubuntu
+Для установки PHP и необходимых модулей выполните команду (замените 8.4 на вашу версию PHP, если требуется):
 ```
-sudo apt-get install php7.0 php7.0-mbstring php7.0-curl
+sudo apt-get install php8.0 php8.0-mbstring php8.0-curl php8.0-openssl
 ``` 
 ## Установка `PHP`,`mbstring`,`curl` в Windows 10: 
 `mbstring` уже установлен в windows.  

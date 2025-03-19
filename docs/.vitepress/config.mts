@@ -83,8 +83,8 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     {text: 'Почему SimpleVK?', link: '/install/who_simplevk'},
+                    {text: 'Установка', link: '/install/requirements'},
                     {text: 'Как пользоваться сайтом', link: '/install/site_helper'},
-                    {text: 'Системные требования и установка', link: '/install/requirements'},
                     {text: 'Подключение', link: '/install/install'},
                     {text: 'Примеры ботов', link: '/install/examples'},
                 ]
