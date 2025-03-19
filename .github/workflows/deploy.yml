@@ -1,0 +1,64 @@
+# Пример рабочего процесса для создания и развёртывания сайта VitePress на GitHub Pages
+#
+name: Deploy VitePress site to Pages
+
+on:
+  # Выполняется при пушах в ветку `main`. Измените на `master`, если используете её как основную.
+  push:
+    branches: [main]
+
+  # Позволяет запустить рабочий процесс вручную через вкладку «Actions».
+  workflow_dispatch:
+
+# Устанавливает разрешения GITHUB_TOKEN для развёртывания на GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Разрешить только одно одновременное развёртывание, пропуская очереди, но не отменяя текущие запуски.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Сборка
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Не требуется, если lastUpdated отключён
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10 # Укажите нужную версию pnpm
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          cache: pnpm # Кэширование для pnpm
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Install dependencies
+        run: pnpm install # Установка зависимостей с помощью pnpm
+      - name: Build with VitePress
+        run: pnpm docs:build # Сборка сайта с помощью pnpm
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  # Развёртывание
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
