@@ -20,12 +20,12 @@ export default defineConfig({
         // ['meta', { property: 'og:type', content: 'website' }],
         // ['meta', { property: 'og:image', content: '/images/preview.jpg' }], // Картинка для соцсетей
         // ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-        ['link', {rel: 'icon', href: '/favicon.ico'}]
+        ['link', {rel: 'icon', href: '/simplevk-doc/favicon.ico'}]
     ],
 
     themeConfig: {
 
-        logo: '/logo.png',
+        logo: '/simplevk-doc/logo.png',
         nav: [
             // { text: 'Home', link: '/' },
             {text: 'Чат разработчиков', link: 'https://vk.me/join/AJQ1dzQRUQxtfd7zSm4STOmt'}
