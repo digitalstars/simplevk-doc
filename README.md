@@ -31,13 +31,12 @@
    ```bash
    git clone https://github.com/digitalstars/simplevk-doc
    cd simplevk-doc
+   pnpm install
    ```
-2. Запустите Docker-контейнер:
+2. Установите зависимости и запустите сервер
    ```bash
-   docker compose up --watch vuepress-dev
+   pnpm install
+   pnpm run docs:dev --host
    ```
-
-3. Откройте документацию в браузере:  
-   Перейдите по адресу http://localhost:8080/simplevk-doc/  
 
 Все изменения в файлах автоматически подхватываются в режиме реального времени.
