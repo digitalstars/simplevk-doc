@@ -5,7 +5,7 @@ name: Deploy VitePress site to Pages
 on:
   # Выполняется при пушах в ветку `main`. Измените на `master`, если используете её как основную.
   push:
-    branches: [main]
+    branches: [master]
 
   # Позволяет запустить рабочий процесс вручную через вкладку «Actions».
   workflow_dispatch:
