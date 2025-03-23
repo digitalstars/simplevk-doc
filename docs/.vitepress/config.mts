@@ -13,6 +13,32 @@ export default defineConfig({
     lastUpdated: true,
 
     head: [
+        // Основной скрипт Яндекс.Метрики
+        [
+            'script',
+            { type: 'text/javascript' },
+            `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+      (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      ym(100539088, "init", {
+        clickmap: true,
+        trackLinks: true,
+        accurateTrackBounce: true,
+        webvisor: true
+      });`
+        ],
+        // Noscript для Яндекс.Метрики
+        [
+            'noscript',
+            {},
+            `<div><img src="https://mc.yandex.ru/watch/100539088" style="position:absolute; left:-9999px;" alt="" /></div>`
+        ],
+        ['link', {rel: 'icon', href: '/simplevk-doc/favicon.ico'}] //withBase почему-то не работает
+    ],
+
+    // head: [
         // ['meta', { name: 'robots', content: 'index, follow' }], // Разрешаем индексацию
         // ['meta', { name: 'keywords', content: 'ключевые слова, seo, vuepress' }], // Ключевые слова
         // ['meta', { name: 'author', content: 'Твоё Имя' }], // Автор страницы
@@ -21,8 +47,7 @@ export default defineConfig({
         // ['meta', { property: 'og:type', content: 'website' }],
         // ['meta', { property: 'og:image', content: '/images/preview.jpg' }], // Картинка для соцсетей
         // ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-        ['link', {rel: 'icon', href: '/simplevk-doc/favicon.ico'}] //withBase почему-то не работает
-    ],
+    // ],
 
     themeConfig: {
 
