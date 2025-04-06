@@ -6,7 +6,7 @@ export default defineConfig({
     lang: 'ru-RU',
     title: "SimpleVK-PHP",
     description: "Документация библиотеки SimpleVK-PHP",
-    base: "/simplevk-doc/",
+    base: "/",
     cleanUrls: true,
     // srcDir: './docs',
     appearance: 'dark',
@@ -35,7 +35,7 @@ export default defineConfig({
             {},
             `<div><img src="https://mc.yandex.ru/watch/100539088" style="position:absolute; left:-9999px;" alt="" /></div>`
         ],
-        ['link', {rel: 'icon', href: '/simplevk-doc/favicon.ico'}] //withBase почему-то не работает
+        ['link', {rel: 'icon', href: '/favicon.ico'}] //withBase почему-то не работает
     ],
 
     // head: [
