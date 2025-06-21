@@ -115,6 +115,13 @@ export default defineConfig({
                 ]
             },
             {
+                text: 'ООП-конструктор ботов',
+                collapsed: false,
+                items: [
+                    {text: 'Использование', link: '/constructor/how_to_use'},
+                ]
+            },
+            {
                 text: 'Классы',
                 collapsed: false,
                 items: [
