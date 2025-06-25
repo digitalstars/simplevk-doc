@@ -82,7 +82,6 @@ $dispatcher->handle();
 
 *Файл: composer.json*
 ```json
-
 "autoload": {
   "psr-4": {
     "App\\": "./"

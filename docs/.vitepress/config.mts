@@ -119,6 +119,7 @@ export default defineConfig({
                 collapsed: false,
                 items: [
                     {text: 'Использование', link: '/constructor/how_to_use'},
+                    {text: 'Понимание внедрения зависимостей', link: '/constructor/dependency_injection'},
                 ]
             },
             {
