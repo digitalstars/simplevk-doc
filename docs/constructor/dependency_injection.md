@@ -9,8 +9,8 @@ sidebarDepth: 0
 
 ## Проблема: Нашему боту нужны данные
 Давайте начнем с простой команды, которая показывает профиль пользователя. В первоначальной версии она возвращает статичные данные:
-```php
-// Actions/ProfileCommand.php
+::: code-group
+```php [Actions/ProfileCommand.php]
 namespace App\Actions;
 
 use DigitalStars\SimpleVK\EventDispatcher\Attributes\Trigger;
@@ -26,6 +26,8 @@ class ProfileCommand extends BaseCommand
     }
 }
 ```
+:::
+
 **Новая задача**: `ProfileCommand` должен получать имя пользователя из базы данных. В качестве объекта базы используем обертку над PDO [digitalstars/DataBase](https://github.com/digitalstars/DataBase).
 
 **Вопрос**: Как передать экземпляр подключения к БД внутрь нашего `ProfileCommand`?
@@ -37,27 +39,27 @@ class ProfileCommand extends BaseCommand
 ::: info ИДЕЯ
 Сделаю переменную глобальной — и все будет работать!
 :::
-```php
-// index.php
+::: code-group
+```php [index.php]
 use DigitalStars\DataBase\DB as PDO;
 $pdo = new PDO("$db_type:host=$ip;dbname=$db_name", $login, $pass);
 
 // ... настройка диспетчера ...
 $dispatcher->handle();
 ```
-```php
-// Actions/ProfileCommand.php
+```php [Actions/ProfileCommand.php]
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
     public function handle(Context $ctx): void
     {
-        global $pdo; // [!code highlight] 🔴 Красная тревога!
+        global $pdo; // [!code warning] 🔴 Красная тревога!
 
         $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
         $ctx->reply("Ваш профиль: {$data['name']}");
     }
 }
+:::
 ```
 #### **Почему это проблема?**  
 - ❌ Скрытая зависимость — не видно, откуда берётся $db, усложняет понимание кода.
@@ -72,8 +74,20 @@ class ProfileCommand extends BaseCommand
 ::: info ИДЕЯ
 Singleton — это же паттерн проектирования! Использую его!
 :::
-```php
-// Services/Database.php
+::: code-group
+```php [Actions/ProfileCommand.php]
+#[Trigger(command: '/profile')]
+class ProfileCommand extends BaseCommand
+{
+    public function handle(Context $ctx): void
+    {
+        $pdo = Database::getInstance(); // [!code warning] 🟡 Выглядит лучше, но...
+        $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
+        $ctx->reply("Ваш профиль: {$data['name']}");
+    }
+}
+```
+```php [Services/Database.php]
 class Database 
 {
     private static ?PDO $instance = null;
@@ -89,19 +103,7 @@ class Database
     }
 }
 ```
-```php
-// Actions/ProfileCommand.php
-#[Trigger(command: '/profile')]
-class ProfileCommand extends BaseCommand
-{
-    public function handle(Context $ctx): void
-    {
-        $pdo = Database::getInstance(); // [!code highlight] 🟡 Выглядит лучше, но...
-        $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
-        $ctx->reply("Ваш профиль: {$data['name']}");
-    }
-}
-```
+:::
 #### Почему это все еще плохо?
 - Скрытая зависимость остается: `ProfileCommand` жестко связан с конкретным классом `Database`.
 - Тестирование по-прежнему сложно
@@ -115,8 +117,8 @@ Singleton решает проблему "единственный экземпл
 ::: tip 💡ПРИНЦИП
 Вместо того чтобы Action сам создавал или искал свои зависимости, мы передаем ему эти зависимости извне через конструктор.
 :::
-```php
-// Actions/ProfileCommand.php
+::: code-group
+```php [Actions/ProfileCommand.php]
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
@@ -131,13 +133,15 @@ class ProfileCommand extends BaseCommand
     }
 }
 ```
+:::
 
 **Новый вопрос**: Кто создаст `ProfileCommand` и передаст ему `PDO`?
 
 ## Ручная фабрика
 `EventDispatcher` позволяет указать функцию-фабрику для создания экземпляров `Actions`:
-```php
-// index.php
+::: code-group
+```php [index.php]
+//...
 $dispatcher = new EventDispatcher($vk, [
     'actions_paths' => [__DIR__ . '/Actions'],
     'root_namespace' => 'App',
@@ -150,6 +154,8 @@ $dispatcher = new EventDispatcher($vk, [
     },
 ]);
 ```
+:::
+
 Плюсы:
 - ✅ Полный контроль над созданием объектов
 - ✅ Явное объявление зависимостей
@@ -193,10 +199,27 @@ $containerBuilder->addDefinitions([
     },
     // Здесь могут быть рецепты для других сервисов: логгера, HTTP-клиента и т.д.
 ]);
-//...
 ```
 :::
-### Шаг 2: Запрос зависимости в классе
+
+### Шаг 2: Интеграция с диспетчером
+Наша фабрика становится невероятно простой: она просто делегирует создание объектов контейнеру.
+
+::: code-group
+```php [index.php]
+$container = require_once __DIR__ . '/config/container.php';
+
+$dispatcher = new EventDispatcher($vk, [
+    'actions_paths' => [__DIR__ . '/Actions'],
+    'root_namespace' => 'App',
+    'factory' => fn(string $class) => $container->get($class), // [!code highlight]
+]);
+
+$dispatcher->handle();
+```
+:::
+
+### Шаг 3: Запрос зависимости в классе
 Наш класс `ProfileCommand` остается таким же чистым и не знает ничего о контейнере. Он просто просит `PDO` в `конструкторе` или `handle()`
 ::: code-group
 ```php [Конструктор]
@@ -228,20 +251,7 @@ class ProfileCommand extends BaseCommand
 }
 ```
 :::
-### Шаг 3: Интеграция с диспетчером
-Наша фабрика становится невероятно простой: она просто делегирует создание объектов контейнеру.
 
-```php
-$container = require_once __DIR__ . '/config/container.php';
-
-$dispatcher = new EventDispatcher($vk, [
-    'actions_paths' => [__DIR__ . '/Actions'],
-    'root_namespace' => 'App',
-    'factory' => fn(string $class) => $container->get($class), // [!code highlight]
-]);
-
-$dispatcher->handle();
-```
 И всё! Это работает автоматически для `ProfileCommand` и для **любого другого Action**, который будет просить `PDO` в конструкторе.
 
 ### Что происходит "под капотом"?
