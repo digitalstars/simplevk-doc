@@ -71,8 +71,7 @@ class ProfileCommand extends BaseCommand
 - ❌ Рефакторинг становится опасным.
 
 ### Вариант №2: Иллюзия контроля с Singleton
-::: info Singleton — это же паттерн проектирования! Должно быть хорошо!
-:::
+::: info Мысль: Singleton — это же паттерн проектирования! Должно быть хорошо!
 ```php
 // Services/Database.php
 class Database 
