@@ -34,7 +34,7 @@ class ProfileCommand extends BaseCommand
 Рассмотрим подходы, которые кажутся простыми, но превращают код в кошмар сопровождения.
 
 ### Вариант №1: Ловушка global
-::: info Мысль:
+::: info ИДЕЯ
 Сделаю переменную глобальной — и все будет работать!
 :::
 ```php
@@ -71,7 +71,9 @@ class ProfileCommand extends BaseCommand
 - ❌ Рефакторинг становится опасным.
 
 ### Вариант №2: Иллюзия контроля с Singleton
-::: info Мысль: Singleton — это же паттерн проектирования! Должно быть хорошо!
+::: info ИДЕЯ
+Singleton — это же паттерн проектирования! Использую его!
+:::
 ```php
 // Services/Database.php
 class Database 
