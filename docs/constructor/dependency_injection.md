@@ -52,7 +52,7 @@ class ProfileCommand extends BaseCommand
 {
     public function handle(Context $ctx): void
     {
-        global $pdo; // 🔴 Красная тревога!
+        global $pdo; // [!code highlight] 🔴 Красная тревога!
 
         $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
         $ctx->reply("Ваш профиль: {$data['name']}");
@@ -96,7 +96,7 @@ class ProfileCommand extends BaseCommand
 {
     public function handle(Context $ctx): void
     {
-        $pdo = Database::getInstance(); // 🟡 Выглядит лучше, но...
+        $pdo = Database::getInstance(); // [!code highlight] 🟡 Выглядит лучше, но...
         $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
         $ctx->reply("Ваш профиль: {$data['name']}");
     }
@@ -107,23 +107,21 @@ class ProfileCommand extends BaseCommand
 - Тестирование по-прежнему сложно
 - Глобальное состояние в маскировке: `Singleton` — это просто красиво оформленная глобальная переменная.
 - Все еще противоречит `SOLID`: Класс одновременно управляет своим жизненным циклом и выполняет бизнес-логику.
-::: tip Вердикт
+::: warning ВЕРДИКТ
 Singleton решает проблему "единственный экземпляр", но не решает проблему управления зависимостями.
 :::
 
 ## ✅ Правильный путь: Инверсия контроля (IoC)
-Ключевая идея правильного подхода — инверсия контроля.
-::: tip 💡Принцип
-Вместо того чтобы Action сам создавал или искал свои зависимости, мы передаем ему эти зависимости извне.
+::: tip 💡ПРИНЦИП
+Вместо того чтобы Action сам создавал или искал свои зависимости, мы передаем ему эти зависимости извне через конструктор.
 :::
-Будем передавать зависимости через конструктор:
 ```php
 // Actions/ProfileCommand.php
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
     public function __construct(
-        private readonly PDO $pdo 
+        private readonly PDO $pdo // [!code highlight]
     ) {}
 
     public function handle(Context $ctx): void
@@ -223,7 +221,7 @@ class ProfileCommand extends BaseCommand
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
-    public function handle(Context $ctx, DB): void
+    public function handle(Context $ctx, PDO $pdo): void // [!code highlight]
     {
         $data = $this->pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
         $ctx->reply("Ваш профиль:: {$data['name']}");
@@ -239,7 +237,7 @@ $container = require_once __DIR__ . '/config/container.php';
 $dispatcher = new EventDispatcher($vk, [
     'actions_paths' => [__DIR__ . '/Actions'],
     'root_namespace' => 'App',
-    'factory' => fn(string $class) => $container->get($class),
+    'factory' => fn(string $class) => $container->get($class), // [!code highlight]
 ]);
 
 $dispatcher->handle();
