@@ -138,15 +138,13 @@ class ProfileCommand extends BaseCommand
 `EventDispatcher` позволяет указать функцию-фабрику для создания экземпляров `Actions`:
 ```php
 // index.php
-$pdo = new PDO('mysql:host=localhost;dbname=test', 'user', 'pass');
-
 $dispatcher = new EventDispatcher($vk, [
     'actions_paths' => [__DIR__ . '/Actions'],
     'root_namespace' => 'App',
     'factory' => static fn(string $class) => match ($class) {
-        App\Actions\ProfileCommand::class => new App\Actions\ProfileCommand($pdo),
-        App\Actions\StatsCommand::class => new App\Actions\StatsCommand($pdo),
-        App\Actions\AdminCommand::class => new App\Actions\AdminCommand($pdo, $logger),
+        ProfileCommand::class => new ProfileCommand($pdo),
+        StatsCommand::class => new StatsCommand($pdo),
+        AdminCommand::class => new AdminCommand($pdo, $logger),
         //остальные классы без зависимостей
         default => new $class(),
     },
@@ -177,6 +175,7 @@ $dispatcher = new EventDispatcher($vk, [
 
 ### Шаг 1: Настройка "рецептов" в контейнере
 В конфигурации DI-контейнера мы описываем, как создавать объекты, требующие особой настройки (например, подключение к БД).
+::: code-group
 ```php [config/container.php]
 // Создание полного контейнера в следующей главе документации
 $containerBuilder->addDefinitions([
@@ -196,6 +195,7 @@ $containerBuilder->addDefinitions([
 ]);
 //...
 ```
+:::
 ### Шаг 2: Запрос зависимости в классе
 Наш класс `ProfileCommand` остается таким же чистым и не знает ничего о контейнере. Он просто просит `PDO` в `конструкторе` или `handle()`
 ::: code-group
