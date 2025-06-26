@@ -198,8 +198,9 @@ $containerBuilder->addDefinitions([
 //...
 ```
 ### Шаг 2: Запрос зависимости в классе
-Наш класс `ProfileCommand` остается таким же чистым и не знает ничего о контейнере. Он просто просит `PDO` в конструкторе.
-```php
+Наш класс `ProfileCommand` остается таким же чистым и не знает ничего о контейнере. Он просто просит `PDO` в `конструкторе` или `handle()`
+::: code-group
+```php [__construct()]
 // Actions/ProfileCommand.php
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
@@ -215,8 +216,7 @@ class ProfileCommand extends BaseCommand
     }
 }
 ```
-Также можно внедрять зависимости не только в конструкторе, но и в `handle()`!
-```php
+```php [handle()]
 // Actions/ProfileCommand.php
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
@@ -228,6 +228,7 @@ class ProfileCommand extends BaseCommand
     }
 }
 ```
+:::
 ### Шаг 3: Интеграция с диспетчером
 Наша фабрика становится невероятно простой: она просто делегирует создание объектов контейнеру.
 
