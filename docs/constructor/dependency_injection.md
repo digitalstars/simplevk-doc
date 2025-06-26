@@ -177,8 +177,7 @@ $dispatcher = new EventDispatcher($vk, [
 
 ### Шаг 1: Настройка "рецептов" в контейнере
 В конфигурации DI-контейнера мы описываем, как создавать объекты, требующие особой настройки (например, подключение к БД).
-```php
-// config/container.php
+```php [config/container.php]
 // Создание полного контейнера в следующей главе документации
 $containerBuilder->addDefinitions([
     // Настройка подключения к БД
@@ -200,13 +199,13 @@ $containerBuilder->addDefinitions([
 ### Шаг 2: Запрос зависимости в классе
 Наш класс `ProfileCommand` остается таким же чистым и не знает ничего о контейнере. Он просто просит `PDO` в `конструкторе` или `handle()`
 ::: code-group
-```php [__construct()]
+```php [Конструктор]
 // Actions/ProfileCommand.php
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
     public function __construct(
-        private readonly PDO $pdo 
+        private readonly PDO $pdo [!code highlight]
     ) {}
 
     public function handle(Context $ctx): void
