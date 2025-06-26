@@ -20,15 +20,15 @@ use DigitalStars\SimpleVK\EventDispatcher\Context;
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
-    public function handle(Context $context): void
+    public function handle(Context $ctx): void
     {
-        $context->msg("Ваш профиль: [ДАННЫЕ НЕ НАЙДЕНЫ]")->send();
+        $ctx->reply("Ваш профиль: [ДАННЫЕ НЕ НАЙДЕНЫ]");
     }
 }
 ```
-**Новая задача**: `ProfileCommand` должен получать имя пользователя и дату его регистрации из базы данных.  
+**Новая задача**: `ProfileCommand` должен получать имя пользователя из базы данных. В качестве объекта базы используем обертку над PDO [digitalstars/DataBase](https://github.com/digitalstars/DataBase).
 
-**Вопрос**: Как передать экземпляр подключения к БД (например, объект `PDO`) внутрь нашего `ProfileCommand`?
+**Вопрос**: Как передать экземпляр подключения к БД внутрь нашего `ProfileCommand`?
 
 ## 🚫Антипаттерны
 Рассмотрим подходы, которые кажутся простыми, но превращают код в кошмар сопровождения.
@@ -39,7 +39,8 @@ class ProfileCommand extends BaseCommand
 :::
 ```php
 // index.php
-$pdo = new PDO('mysql:host=localhost;dbname=test', 'user', 'pass');
+use DigitalStars\DataBase\DB as PDO;
+$pdo = new PDO("$db_type:host=$ip;dbname=$db_name", $login, $pass);
 
 // ... настройка диспетчера ...
 $dispatcher->handle();
@@ -49,15 +50,12 @@ $dispatcher->handle();
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
-    public function handle(Context $context): void
+    public function handle(Context $ctx): void
     {
         global $pdo; // 🔴 Красная тревога!
 
-        $stmt = $pdo->prepare("SELECT name, created_at FROM users WHERE vk_id = ?");
-        $stmt->execute([$context->userId]);
-        $user = $stmt->fetch();
-
-        $context->msg("Имя: {$user['name']}\nРегистрация: {$user['created_at']}")->send();
+        $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
+        $ctx->reply("Ваш профиль: {$data['name']}");
     }
 }
 ```
@@ -96,15 +94,11 @@ class Database
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
-    public function handle(Context $context): void
+    public function handle(Context $ctx): void
     {
         $pdo = Database::getInstance(); // 🟡 Выглядит лучше, но...
-
-        $stmt = $pdo->prepare("SELECT name, created_at FROM users WHERE vk_id = ?");
-        $stmt->execute([$context->userId]);
-        $user = $stmt->fetch();
-
-        $context->msg("Имя: {$user['name']}\nРегистрация: {$user['created_at']}")->send();
+        $data = $pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
+        $ctx->reply("Ваш профиль: {$data['name']}");
     }
 }
 ```
@@ -132,20 +126,13 @@ class ProfileCommand extends BaseCommand
         private readonly PDO $pdo 
     ) {}
 
-    public function handle(Context $context): void
+    public function handle(Context $ctx): void
     {
-        $stmt = $this->pdo->prepare("SELECT name, created_at FROM users WHERE vk_id = ?");
-        $stmt->execute([$context->userId]);
-        $user = $stmt->fetch();
-
-        $context->msg("Имя: {$user['name']}\nРегистрация: {$user['created_at']}")->send();
+        $data = $this->pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
+        $ctx->reply("Ваш профиль: {$data['name']}");
     }
 }
 ```
-#### Преимущества:
-- ✅ Явные зависимости: Сразу видно, что нужно классу для работы
-- ✅ Легко тестировать: Можно передать мок-объект в конструктор
-- ✅ Гибкость: Можно передать любую реализацию `PDO`
 
 **Новый вопрос**: Кто создаст `ProfileCommand` и передаст ему `PDO`?
 
@@ -179,9 +166,10 @@ $dispatcher = new EventDispatcher($vk, [
 - ❌ Легко забыть добавить новый класс
 - ❌ Невозможно реализовать ленивую загрузку. PDO инициализируется при любом запросе.
 
-::: tip Вердикт
+::: tip ВЕРДИКТ
 Отлично для небольших проектов и с малым количеством зависимостей.
 :::
+
 ## DI-контейнер
 Фабрика — это хорошо, но ее можно автоматизировать. Этим занимаются DI-контейнеры.
 ::: tip 💡DI-контейнер
@@ -222,13 +210,10 @@ class ProfileCommand extends BaseCommand
         private readonly PDO $pdo 
     ) {}
 
-    public function handle(Context $context): void
+    public function handle(Context $ctx): void
     {
-        $stmt = $this->pdo->prepare("SELECT name, created_at FROM users WHERE vk_id = ?");
-        $stmt->execute([$context->userId]);
-        $user = $stmt->fetch();
-
-        $context->msg("Имя: {$user['name']}\nРегистрация: {$user['created_at']}")->send();
+        $data = $this->pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
+        $ctx->reply("Ваш профиль: {$data['name']}");
     }
 }
 ```
@@ -238,13 +223,10 @@ class ProfileCommand extends BaseCommand
 #[Trigger(command: '/profile')]
 class ProfileCommand extends BaseCommand
 {
-    public function handle(Context $context, PDO $pdo): void
+    public function handle(Context $ctx, DB): void
     {
-        $stmt = $this->pdo->prepare("SELECT name, created_at FROM users WHERE vk_id = ?");
-        $stmt->execute([$context->userId]);
-        $user = $stmt->fetch();
-
-        $context->msg("Имя: {$user['name']}\nРегистрация: {$user['created_at']}")->send();
+        $data = $this->pdo->row("SELECT name FROM users WHERE vk_id = ?i", [$ctx->userId]);
+        $ctx->reply("Ваш профиль:: {$data['name']}");
     }
 }
 ```
