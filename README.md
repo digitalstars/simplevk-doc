@@ -26,14 +26,14 @@
 ## Локальная разработка
 
 Чтобы запустить документацию локально, выполните следующие шаги:
-
-1. Клонируйте репозиторий:
+1. Установите [pnpm](https://pnpm.io/ru/installation)
+2. Установите [Node.js](https://nodejs.org/en/download/)
+3. Клонируйте репозиторий:
    ```bash
    git clone https://github.com/digitalstars/simplevk-doc
    cd simplevk-doc
-   pnpm install
    ```
-2. Установите зависимости и запустите сервер
+4. Установите зависимости и запустите сервер
    ```bash
    pnpm install
    pnpm run docs:dev --host
